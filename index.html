@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#1d4ed8">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<title>صيدلية آدم - الطلبيات</title>
+<style>
+:root{--bg:#eef4ff;--card:#fff;--tx:#1f2937;--pr:#1d4ed8;--bd:#d1d5db;--rd:#b91c1c}
+@media(prefers-color-scheme:dark){:root{--bg:#0f172a;--card:#1e293b;--tx:#f3f4f6;--bd:#374151;--pr:#3b82f6}}
+*{box-sizing:border-box}
+body{margin:0;font-family:Tahoma,Arial,sans-serif;background:var(--bg);color:var(--tx)}
+header{background:linear-gradient(135deg,#1e3a8a,#2563eb);color:#fff;padding:12px;display:flex;align-items:center;justify-content:center;gap:10px;font-size:19px;font-weight:bold}
+header svg{width:42px;height:42px}
+.foot{text-align:center;font-size:12px;padding:14px 10px 24px;color:var(--tx);opacity:.85;border-top:1px solid var(--bd);margin-top:10px}
+.rh{display:flex;align-items:center;justify-content:center;gap:10px;font-size:22px;font-weight:bold;color:#1d4ed8}.rh svg{width:54px;height:54px}
+@media print{*{-webkit-print-color-adjust:exact;print-color-adjust:exact}.rh{color:#1d4ed8}}
+nav{display:flex;gap:5px;padding:10px;position:sticky;top:0;background:var(--bg);z-index:5}
+nav button{flex:1;padding:10px 4px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:8px;font:inherit;font-size:13px}
+nav button.on{background:var(--pr);color:#fff;border-color:var(--pr)}
+main{padding:10px;max-width:900px;margin:auto}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:12px;margin-bottom:12px}
+label{display:block;font-size:13px;margin:8px 0 3px}
+input,select,textarea{width:100%;padding:9px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font:inherit}
+.row{display:flex;gap:8px;align-items:end}.row>*{flex:1}.row>.btn-s{flex:0 0 auto}
+.btn{padding:10px 16px;border:0;border-radius:8px;background:var(--pr);color:#fff;font:inherit;margin-top:10px;cursor:pointer}
+.btn-s{padding:9px 12px;margin:0}
+.del{background:var(--rd);padding:5px 9px;font-size:12px;margin:0}
+.wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{border-bottom:1px solid var(--bd);padding:7px;text-align:right;white-space:nowrap}
+th{background:var(--bg)}
+.tag{padding:2px 8px;border-radius:10px;font-size:12px;color:#fff}
+.ok{background:#15803d}.rt{background:#c2410c}
+.hint{background:#fff7ed;color:#9a3412;padding:8px;border-radius:8px;font-size:13px;margin-top:8px}
+.wh{display:block;width:100%;text-align:right;padding:12px;margin-bottom:6px;background:var(--card);color:var(--tx);border:1px solid var(--bd);border-radius:8px;font:inherit}
+.hide{display:none}
+.sum{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}
+.sum div{background:var(--bg);border-radius:8px;padding:8px;font-size:13px}
+.sum b{display:block;font-size:16px}
+@media print{:root{--bg:#fff;--card:#fff;--tx:#000;--bd:#999}header,nav,.noprint{display:none!important}main{padding:0;max-width:none}.card{border:0;padding:0}th,td{font-size:11px}.tag{color:#000;border:1px solid #000;background:#fff}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><symbol id="lg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="#fff" stroke="#1d4ed8" stroke-width="4"/><path d="M42 18h16v24h24v16H58v24H42V58H18V42h24z" fill="#2563eb"/><circle cx="50" cy="50" r="9" fill="#fff"/><path d="M50 43v14M43 50h14" stroke="#1d4ed8" stroke-width="4" stroke-linecap="round"/></symbol></svg>
+<header><svg><use href="#lg"/></svg><span>صيدلية آدم</span></header>
+<nav>
+  <button data-p="orders" class="on">الطلبيات</button>
+  <button data-p="returns">مردود بيع</button>
+  <button data-p="log">السجل</button>
+  <button data-p="rep">طباعة</button>
+  <button data-p="whs">المذاخر</button>
+</nav>
+<main>
+
+<section id="orders">
+  <div class="card">
+    <div class="row">
+      <div><label>رقم التسلسل</label><input id="oId" type="number" min="1" inputmode="numeric" placeholder="اكتب الرقم"></div>
+      <div><label>التاريخ</label><input id="oDate" type="date"></div>
+    </div>
+    <label>المذخر</label>
+    <div class="row">
+      <select id="oW"></select>
+      <button class="btn btn-s" id="addWQuick" type="button">+ إضافة مذخر</button>
+    </div>
+    <label>نوع الطلبية</label>
+    <select id="oType"><option value="ok">مقبولة</option><option value="rt">استرجاع</option></select>
+    <label>سعر الطلبية</label><input id="oAmt" type="number" min="0" step="any" inputmode="decimal">
+    <button class="btn" id="saveO">حفظ</button>
+  </div>
+  <div class="card wrap"><b>آخر 5 طلبيات</b><table>
+    <thead><tr><th>#</th><th>التاريخ</th><th>المذخر</th><th>النوع</th><th>السعر</th></tr></thead>
+    <tbody id="oBody"></tbody>
+  </table></div>
+</section>
+
+<section id="returns" class="hide">
+  <div id="rWList" class="card"></div>
+  <div id="rDetail" class="hide">
+    <div class="card"><button class="btn btn-s" id="rBack">← رجوع للمذاخر</button>
+      <h3 id="rTitle"></h3>
+      <div id="rForm" class="hide">
+        <b id="rOrd"></b>
+        <label>المواد المسترجعة</label><textarea id="rMeds" rows="2"></textarea>
+        <div class="row">
+          <div><label>سعر المواد</label><input id="rPrice" type="number" min="0" step="any" inputmode="decimal"></div>
+          <div><label>رقم قائمة مردود البيع (عند وصولها)</label><input id="rList" type="number" min="1" inputmode="numeric"></div>
+        </div>
+        <button class="btn" id="saveR">حفظ</button>
+        <button class="btn" id="cancelR" style="background:#6b7280">إلغاء</button>
+      </div>
+    </div>
+    <div class="card wrap"><table>
+      <thead><tr><th>#</th><th>التاريخ</th><th>سعر الطلبية</th><th>المواد المسترجعة</th><th>سعر المواد</th><th>قائمة مردود البيع</th><th>الطلبية بعد الاسترجاع</th><th></th></tr></thead>
+      <tbody id="rBody"></tbody>
+    </table></div>
+  </div>
+</section>
+
+<section id="log" class="hide">
+  <div class="card">
+    <label>اختر المذخر</label><select id="lW"></select>
+    <label>بحث برقم الطلبية (رقم التسلسل)</label>
+    <input id="lQ" type="search" inputmode="numeric" placeholder="اكتب رقم الطلبية">
+    <div class="row">
+      <div><label>من تاريخ</label><input id="lFrom" type="date"></div>
+      <div><label>إلى تاريخ</label><input id="lTo" type="date"></div>
+    </div>
+    <div class="sum" id="lSum"></div>
+  </div>
+  <div class="card wrap"><table>
+    <thead><tr><th>#</th><th>التاريخ</th><th>المذخر</th><th>النوع</th><th>السعر</th><th>سعر المواد المسترجعة</th><th>الطلبية بعد الاسترجاع</th><th></th></tr></thead>
+    <tbody id="lBody"></tbody>
+  </table></div>
+</section>
+
+<section id="rep" class="hide">
+  <div class="card noprint">
+    <label>المذخر</label><select id="pW"></select>
+    <div class="row">
+      <div><label>من تاريخ</label><input id="pFrom" type="date"></div>
+      <div><label>إلى تاريخ</label><input id="pTo" type="date"></div>
+    </div>
+    <button class="btn" onclick="doPrint(false)">🖨 طباعة</button>
+    <button class="btn" onclick="doPrint(true)">📄 تصدير PDF</button>
+    <button class="btn" onclick="doCsv()">📊 تصدير Excel</button>
+    <p class="hint">في نافذة الطباعة اختر الوجهة "حفظ كـ PDF" لتصدير ملف PDF.</p>
+  </div>
+  <div class="card wrap" id="repArea"></div>
+</section>
+
+<section id="whs" class="hide">
+  <div class="card">
+    <label>اسم المذخر</label><input id="wName">
+    <button class="btn" id="saveW">إضافة</button>
+  </div>
+  <div class="card wrap"><table><tbody id="wBody"></tbody></table></div>
+  <div class="card">
+    <b>📥 استيراد من Excel</b>
+    <p style="font-size:13px">في Excel حدّد الصفوف (الأعمدة بالترتيب: رقم التسلسل، التاريخ، المجموع، المذخر، نوع الطلب) ثم انسخها والصقها هنا. لا يحذف بياناتك، يضيف فقط ويتجاهل المكرر.</p>
+    <textarea id="xlTxt" rows="5" placeholder="الصق هنا"></textarea>
+    <button class="btn" id="xlGo">استيراد</button>
+  </div>
+  <div class="card">
+    <b>حفظ البيانات (نسخة احتياطية)</b>
+    <p style="font-size:13px" id="bkInfo"></p>
+    <button class="btn" id="exp">💾 حفظ وتصدير نسخة</button>
+    <button class="btn" id="imp">📂 استيراد نسخة</button>
+    <input type="file" id="impF" accept=".json" class="hide">
+  </div>
+</section>
+
+</main>
+<footer class="foot">بإشراف: م. طبي حسن محمد &nbsp;•&nbsp; بايلوجي زهراء &nbsp;•&nbsp; بايلوجي ليث</footer>
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const today=()=>new Date().toISOString().slice(0,10);
+let db;
+try{db=JSON.parse(localStorage.getItem('pharma')||'null')}catch(e){}
+db=db||{w:[],o:[],r:[],rn:1,wn:1};
+db.o.forEach((o,i)=>{if(!o.u)o.u='o'+i+'_'+o.id});
+const save=()=>{localStorage.setItem('pharma',JSON.stringify(db));if(window.fbPush)window.fbPush(JSON.stringify(db))};
+window.getLocalDb=()=>JSON.stringify(db);
+window.applyRemote=d=>{try{const n=JSON.parse(d);if(!n||!n.w||!n.o)return;n.o.forEach((o,i)=>{if(!o.u)o.u='o'+i+'_'+o.id});db=n;localStorage.setItem('pharma',JSON.stringify(db));render()}catch(e){}};
+const wName=id=>(db.w.find(w=>w.id==id)||{name:'—'}).name;
+const fmt=n=>Number(n).toLocaleString('en-US');
+const typeLbl=t=>t==='ok'?'مقبولة':'استرجاع';
+let curW=null,editU=null,editR=null;
+
+function show(p){
+  ['orders','returns','log','rep','whs'].forEach(x=>$('#'+x).classList.toggle('hide',x!==p));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.p===p));
+  render();
+}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{curW=null;show(b.dataset.p)});
+
+function addWarehouse(name){
+  name=(name||'').trim(); if(!name) return null;
+  const w={id:db.wn++,name}; db.w.push(w); save(); return w;
+}
+$('#addWQuick').onclick=()=>{const w=addWarehouse(prompt('اسم المذخر الجديد:'));if(w){render();$('#oW').value=w.id}};
+$('#saveW').onclick=()=>{if(addWarehouse($('#wName').value)){$('#wName').value='';render()}};
+
+$('#saveO').onclick=()=>{
+  const w=+$('#oW').value, id=+$('#oId').value, type=$('#oType').value, amt=+$('#oAmt').value||0;
+  if(!w) return alert('أضف مذخراً أولاً');
+  if(!(id>0)) return alert('اكتب رقم التسلسل');
+  if(db.o.some(o=>o.u!==editU&&o.w===w&&o.id===id)) return alert('هذا الرقم موجود مسبقاً لنفس المذخر');
+  if(amt<=0) return alert('أدخل سعر الطلبية');
+  const rec={id,date:$('#oDate').value||today(),w,type,amt};
+  if(editU){Object.assign(db.o.find(o=>o.u===editU),rec);editU=null;$('#saveO').textContent='حفظ'}
+  else db.o.push({u:'o'+Date.now(),...rec});
+  save();
+  $('#oId').value='';$('#oAmt').value='';
+  render();
+};
+const retSum=o=>(o.type==='rt'&&o.rlist)?(o.rprice||0):0;
+
+$('#saveR').onclick=()=>{
+  const o=db.o.find(o=>o.u===editR);if(!o)return;
+  const meds=$('#rMeds').value.trim(),price=+$('#rPrice').value||0,list=+$('#rList').value||0;
+  if(!meds&&!price&&!list) return alert('أدخل المواد أو السعر');
+  Object.assign(o,{rmeds:meds,rprice:price,rlist:list});
+  editR=null;save();render();
+};
+$('#cancelR').onclick=()=>{editR=null;render()};
+$('#rBack').onclick=()=>{curW=null;editR=null;render()};
+['lW','lQ','lFrom','lTo'].forEach(i=>$('#'+i).oninput=renderLog);
+['pW','pFrom','pTo'].forEach(i=>$('#'+i).oninput=renderRep);
+
+function renderLog(){
+  const w=+$('#lW').value,q=$('#lQ').value.trim(),f=$('#lFrom').value,t=$('#lTo').value;
+  const rows=db.o.filter(o=>(!w||o.w===w)&&(!q||String(o.id).includes(q))&&(!f||o.date>=f)&&(!t||o.date<=t))
+    .sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id);
+  const tot=rows.reduce((s,o)=>s+o.amt,0),ret=rows.reduce((s,o)=>s+retSum(o),0);
+  $('#lSum').innerHTML=`<div>عدد الطلبيات<b>${rows.length}</b></div><div>مجموع الطلبيات<b>${fmt(tot)}</b></div><div>مجموع مردود البيع<b>${fmt(ret)}</b></div><div>الصافي بعد الاسترجاع<b>${fmt(tot-ret)}</b></div>`;
+  $('#lBody').innerHTML=rows.map(o=>`<tr><td>${o.id}</td><td>${o.date}</td><td>${esc(wName(o.w))}</td>
+    <td><span class="tag ${o.type}">${typeLbl(o.type)}</span></td><td>${fmt(o.amt)}</td>
+    <td>${o.type==='rt'?fmt(o.rprice||0):'—'}</td><td>${o.type==='rt'?(o.rlist?'<b>'+fmt(o.amt-o.rprice)+'</b>':'بانتظار القائمة'):'—'}</td>
+    <td><button class="btn btn-s" onclick="editO('${o.u}')">تعديل</button> <button class="btn del" onclick="delO('${o.u}')">حذف</button></td></tr>`).join('')||'<tr><td colspan="8">لا توجد نتائج</td></tr>';
+}
+
+function render(){
+  if(!$('#oDate').value)$('#oDate').value=today();
+  const opts=db.w.map(w=>`<option value="${w.id}">${esc(w.name)}</option>`).join('');
+  const sel=$('#oW').value;
+  $('#oW').innerHTML=opts||'<option value="">لا توجد مذاخر</option>';
+  if(sel)$('#oW').value=sel;
+  const ls=$('#lW').value;
+  $('#lW').innerHTML='<option value="0">كل المذاخر</option>'+opts;$('#lW').value=ls||'0';
+  $('#oBody').innerHTML=db.o.slice(-5).reverse().map(o=>`<tr><td>${o.id}</td><td>${o.date}</td><td>${esc(wName(o.w))}</td>
+    <td><span class="tag ${o.type}">${typeLbl(o.type)}</span></td><td>${fmt(o.amt)}</td></tr>`).join('')||'<tr><td colspan="5">لا توجد طلبيات</td></tr>';
+  $('#wBody').innerHTML=db.w.map(w=>`<tr><td>${esc(w.name)}</td><td><button class="btn del" onclick="delW(${w.id})">حذف</button></td></tr>`).join('')||'<tr><td>لا توجد مذاخر</td></tr>';
+  $('#rWList').classList.toggle('hide',curW!==null);
+  $('#rDetail').classList.toggle('hide',curW===null);
+  $('#rWList').innerHTML='<h3>اختر المذخر</h3>'+(db.w.map(w=>`<button class="wh" onclick="curW=${w.id};render()">${esc(w.name)} <small>(${db.o.filter(o=>o.w===w.id&&o.type==='rt').length} طلبية استرجاع)</small></button>`).join('')||'لا توجد مذاخر، أضف مذخراً أولاً.');
+  if(curW!==null){
+    $('#rTitle').textContent='مردود بيع: '+wName(curW);
+    const eo=db.o.find(o=>o.u===editR);
+    $('#rForm').classList.toggle('hide',!eo);
+    if(eo){$('#rOrd').textContent='الطلبية رقم '+eo.id+' — '+fmt(eo.amt);
+      if(!$('#rMeds').dataset.u||$('#rMeds').dataset.u!==editR){$('#rMeds').dataset.u=editR;$('#rMeds').value=eo.rmeds||'';$('#rPrice').value=eo.rprice||'';$('#rList').value=eo.rlist||''}}
+    else $('#rMeds').dataset.u='';
+    $('#rBody').innerHTML=db.o.filter(o=>o.w===curW&&o.type==='rt').sort((a,b)=>b.id-a.id).map(o=>`<tr><td>${o.id}</td><td>${o.date}</td><td>${fmt(o.amt)}</td>
+      <td style="white-space:normal">${esc(o.rmeds||'—')}</td><td>${o.rprice?fmt(o.rprice):'—'}</td><td>${o.rlist||'—'}</td>
+      <td>${o.rlist?'<b>'+fmt(o.amt-(o.rprice||0))+'</b>':'بانتظار القائمة'}</td>
+      <td><button class="btn btn-s" onclick="editR='${o.u}';render();scrollTo(0,0)">إضافة / تعديل</button></td></tr>`).join('')||'<tr><td colspan="8">لا توجد طلبيات بنوع استرجاع لهذا المذخر</td></tr>';
+  }
+  const ps=$('#pW').value;$('#pW').innerHTML='<option value="0">كل المذاخر</option>'+opts;$('#pW').value=ps||'0';
+  const bk=localStorage.getItem('pharma_bk');
+  $('#bkInfo').textContent='آخر نسخة محفوظة: '+(bk||'لم تحفظ نسخة بعد')+' — صدّر نسخة بعد كل إدخال مهم.';
+  renderLog();renderRep();
+}
+function repRows(){
+  const w=+$('#pW').value,f=$('#pFrom').value,t=$('#pTo').value;
+  return db.o.filter(o=>(!w||o.w===w)&&(!f||o.date>=f)&&(!t||o.date<=t)).sort((a,b)=>a.date.localeCompare(b.date)||a.id-b.id);
+}
+function renderRep(){
+  const w=+$('#pW').value,f=$('#pFrom').value,t=$('#pTo').value,rows=repRows();
+  const tot=rows.reduce((s,o)=>s+o.amt,0),ret=rows.reduce((s,o)=>s+retSum(o),0);
+  $('#repArea').innerHTML=`<div class="rh"><svg><use href="#lg"/></svg><span>صيدلية آدم</span></div>
+  <h3 style="text-align:center">كشف طلبيات — ${w?esc(wName(w)):'كل المذاخر'}</h3>
+  <p style="text-align:center">الفترة: ${f||'البداية'} إلى ${t||'اليوم'}</p>
+  <table><thead><tr><th>#</th><th>التاريخ</th>${w?'':'<th>المذخر</th>'}<th>النوع</th><th>سعر الطلبية</th><th>المواد المسترجعة</th><th>سعر المواد</th><th>قائمة مردود البيع</th><th>الطلبية بعد الاسترجاع</th></tr></thead><tbody>`+
+  (rows.map(o=>`<tr><td>${o.id}</td><td>${o.date}</td>${w?'':'<td>'+esc(wName(o.w))+'</td>'}<td>${typeLbl(o.type)}</td><td>${fmt(o.amt)}</td>
+  <td style="white-space:normal">${o.type==='rt'?esc(o.rmeds||'—'):'—'}</td><td>${o.type==='rt'&&o.rprice?fmt(o.rprice):'—'}</td><td>${o.type==='rt'&&o.rlist?o.rlist:'—'}</td>
+  <td>${o.type==='rt'?(o.rlist?fmt(o.amt-o.rprice):'بانتظار القائمة'):'—'}</td></tr>`).join('')||'<tr><td colspan="9">لا توجد بيانات</td></tr>')+
+  `</tbody></table><p><b>عدد الطلبيات:</b> ${rows.length} &nbsp; <b>المجموع:</b> ${fmt(tot)} &nbsp; <b>مردود البيع:</b> ${fmt(ret)} &nbsp; <b>الصافي:</b> ${fmt(tot-ret)}</p>`;
+}
+function doPrint(pdf){
+  renderRep();const old=document.title;
+  if(pdf){const w=+$('#pW').value;document.title='كشف-'+(w?wName(w):'كل-المذاخر')+'-'+($('#pFrom').value||'')+'_'+($('#pTo').value||today())}
+  window.print();document.title=old;
+}
+function doCsv(){
+  const w=+$('#pW').value,q=v=>'"'+String(v).replace(/"/g,'""')+'"';
+  const lines=[['رقم','التاريخ','المذخر','النوع','سعر الطلبية','المواد المسترجعة','سعر المواد','قائمة مردود البيع','الطلبية بعد الاسترجاع'].map(q).join(',')];
+  repRows().forEach(o=>lines.push([o.id,o.date,wName(o.w),typeLbl(o.type),o.amt,o.rmeds||'',o.rprice||'',o.rlist||'',o.type==='rt'&&o.rlist?o.amt-o.rprice:''].map(q).join(',')));
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob(['\ufeff'+lines.join('\n')],{type:'text/csv;charset=utf-8'}));
+  a.download='كشف-'+(w?wName(w):'كل-المذاخر')+'.csv';a.click();
+}
+$('#exp').onclick=()=>{
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([JSON.stringify(db)],{type:'application/json'}));
+  a.download='نسخة-'+today()+'.json';a.click();
+  localStorage.setItem('pharma_bk',today());render();
+};
+$('#imp').onclick=()=>$('#impF').click();
+$('#impF').onchange=e=>{
+  const f=e.target.files[0];if(!f)return;
+  f.text().then(t=>{try{const d=JSON.parse(t);if(!d.w||!d.o)throw 0;
+    if(confirm('سيتم استبدال البيانات الحالية. متابعة؟')){db=d;save();location.reload()}}catch(x){alert('ملف غير صالح')}});
+};
+if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();
+function editO(u){
+  const o=db.o.find(o=>o.u===u);if(!o)return;
+  editU=u;show('orders');
+  $('#oId').value=o.id;$('#oDate').value=o.date;$('#oW').value=o.w;$('#oType').value=o.type;$('#oAmt').value=o.amt;
+  $('#saveO').textContent='حفظ التعديل';scrollTo(0,0);
+}
+function delO(u){if(confirm('حذف الطلبية؟')){db.o=db.o.filter(o=>o.u!==u);save();render()}}
+function delW(id){
+  if(db.o.some(o=>o.w===id)) return alert('لا يمكن حذف مذخر عليه سجلات');
+  if(confirm('حذف المذخر؟')){db.w=db.w.filter(w=>w.id!==id);save();render()}
+}
+
+$('#xlGo').onclick=()=>{
+  const nd=t=>t.replace(/[٠-٩]/g,c=>c.charCodeAt(0)-1632).replace(/[۰-۹]/g,c=>c.charCodeAt(0)-1776);
+  const key=n=>n.replace(/^مذخر\s*/,'').replace(/[أإآ]/g,'ا').trim();
+  let add=0,dup=0,bad=[],newW=0;
+  nd($('#xlTxt').value).split(/\r?\n/).forEach((ln,i)=>{
+    if(!ln.trim())return;
+    const c=ln.split('\t').map(x=>x.trim());
+    const id=parseInt(c[0]);
+    if(!(id>0))return;
+    const m=(c[1]||'').match(/(\d{4})\D(\d{1,2})\D(\d{1,2})/);
+    const amt=parseFloat((c[2]||'').replace(/[,،\s]/g,''));
+    const wn=c[3]||'';
+    if(!m||!(amt>0)||!wn){bad.push(id);return}
+    const date=m[1]+'-'+m[2].padStart(2,'0')+'-'+m[3].padStart(2,'0');
+    let w=db.w.find(x=>key(x.name)===key(wn));
+    if(!w){w=addWarehouse(wn);newW++}
+    if(db.o.some(o=>o.w===w.id&&o.id===id)){dup++;return}
+    db.o.push({u:'o'+Date.now()+'_'+i,id,date,w:w.id,type:/استرجاع|استرجاع/.test(c[4]||'')?'rt':'ok',amt});
+    add++;
+  });
+  save();render();
+  if(add)$('#xlTxt').value='';
+  alert('تمت إضافة '+add+' طلبية'+(newW?' و '+newW+' مذخر جديد':'')+(dup?'\nتم تجاهل '+dup+' مكررة':'')+(bad.length?'\nصفوف فيها خطأ (الأرقام): '+bad.join('، '):''));
+};
+render();
+if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+<div id="syncSt" style="position:fixed;bottom:8px;left:8px;z-index:9999;font:12px sans-serif;padding:4px 10px;border-radius:12px;background:#eee;color:#555">⏳ اتصال...</div>
+<button id="outBtn" style="display:none;position:fixed;bottom:8px;left:110px;z-index:9999;font:12px sans-serif;padding:4px 10px;border-radius:12px;border:0;background:#ddd;color:#333">خروج</button>
+<div id="loginBox" style="position:fixed;inset:0;z-index:99999;background:#f4f6f8;display:flex;align-items:center;justify-content:center;font-family:sans-serif;direction:rtl">
+  <div style="background:#fff;padding:24px;border-radius:14px;box-shadow:0 4px 20px #0002;width:min(340px,90vw)">
+    <h3 style="margin:0 0 14px;text-align:center">تسجيل الدخول</h3>
+    <input id="lgE" type="email" autocomplete="username" placeholder="الإيميل" dir="ltr" style="width:100%;box-sizing:border-box;padding:10px;margin-bottom:10px;font-size:16px;border:1px solid #bbb;border-radius:8px">
+    <input id="lgP" type="password" autocomplete="current-password" placeholder="كلمة السر" dir="ltr" style="width:100%;box-sizing:border-box;padding:10px;margin-bottom:10px;font-size:16px;border:1px solid #bbb;border-radius:8px">
+    <button id="lgB" style="width:100%;padding:11px;font-size:16px;border:0;border-radius:8px;background:#1976d2;color:#fff">دخول</button>
+    <div id="lgM" style="color:#c62828;font-size:13px;margin-top:10px;text-align:center;min-height:18px"></div>
+  </div>
+</div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+const firebaseConfig = {
+  apiKey: "AIzaSyBgw8Mqr_jc25doTF09M2HOYI4duojuTcY",
+  authDomain: "adam-533d1.firebaseapp.com",
+  projectId: "adam-533d1",
+  storageBucket: "adam-533d1.firebasestorage.app",
+  messagingSenderId: "660154243133",
+  appId: "1:660154243133:web:9dbbd29b513e975b1e7254"
+};
+const $$=id=>document.getElementById(id);
+const st=$$('syncSt'),box=$$('loginBox'),outB=$$('outBtn');
+const setSt=(t,c)=>{st.textContent=t;st.style.background=c};
+try{
+  const app=initializeApp(firebaseConfig);
+  const auth=getAuth(app);
+  const fdb=initializeFirestore(app,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})});
+  const ref=doc(fdb,'pharma','main');
+  let timer=null,last='',unsub=null;
+  async function startSync(){
+    if(unsub)return;
+    window.fbPush=json=>{
+      last=json;clearTimeout(timer);setSt('⏳ جاري الحفظ...','#fff3cd');
+      timer=setTimeout(()=>setDoc(ref,{data:json,t:Date.now()}).then(()=>setSt('✅ متزامن','#d4edda')).catch(()=>setSt('⚠️ فشل الحفظ','#f8d7da')),400);
+    };
+    try{
+      const snap=await getDoc(ref);
+      if(!snap.exists())await setDoc(ref,{data:window.getLocalDb(),t:Date.now()});
+    }catch(e){setSt('⚠️ تعذر الاتصال','#f8d7da')}
+    unsub=onSnapshot(ref,s=>{
+      if(!s.exists()||s.metadata.hasPendingWrites)return;
+      const d=s.data().data;
+      if(d&&d!==window.getLocalDb()&&d!==last)window.applyRemote(d);
+      setSt('✅ متزامن','#d4edda');
+    },()=>setSt('⚠️ بدون اتصال','#f8d7da'));
+  }
+  onAuthStateChanged(auth,u=>{
+    if(u){box.style.display='none';outB.style.display='block';startSync()}
+    else{
+      if(unsub){unsub();unsub=null}
+      window.fbPush=null;box.style.display='flex';outB.style.display='none';setSt('🔒 غير مسجل','#eee');
+    }
+  });
+  const login=()=>{
+    $$('lgM').textContent='';
+    signInWithEmailAndPassword(auth,$$('lgE').value.trim(),$$('lgP').value)
+      .catch(e=>{const c=e.code||String(e);const m={'auth/network-request-failed':'لا يوجد اتصال بالإنترنت','auth/invalid-credential':'الإيميل أو كلمة السر غلط','auth/invalid-email':'شكل الإيميل غلط','auth/user-not-found':'هذا الإيميل غير مسجل','auth/wrong-password':'كلمة السر غلط','auth/too-many-requests':'محاولات كثيرة، انتظر قليلاً','auth/operation-not-supported-in-this-environment':'افتح التطبيق من رابط على الإنترنت وليس من الملف مباشرة','auth/unauthorized-domain':'هذا الرابط غير مسموح في Firebase'};$$('lgM').textContent=(m[c]||'خطأ')+' ('+c+')'});
+  };
+  $$('lgB').onclick=login;
+  $$('lgP').onkeydown=e=>{if(e.key==='Enter')login()};
+  outB.onclick=()=>signOut(auth);
+}catch(e){setSt('⚠️ المزامنة غير متاحة','#f8d7da')}
+</script>
+</body>
+</html>
