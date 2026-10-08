@@ -1,0 +1,17 @@
+{
+  "name": "صيدلية آدم - الطلبيات",
+  "short_name": "طلبيات آدم",
+  "description": "تطبيق إدارة طلبيات صيدلية آدم",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f0f6fc",
+  "theme_color": "#075a9b",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
